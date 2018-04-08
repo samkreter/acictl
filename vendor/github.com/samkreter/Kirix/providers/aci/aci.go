@@ -258,6 +258,7 @@ func GetACIFromK8sPod(pod *v1.Pod, region string, operatingSystem string) (*aci.
 	var containerGroup aci.ContainerGroup
 	containerGroup.Location = region
 	containerGroup.Name = pod.Name
+	containerGroup.Type = "Microsoft.ContainerInstance/containerGroups"
 	containerGroup.RestartPolicy = aci.ContainerGroupRestartPolicy(pod.Spec.RestartPolicy)
 	containerGroup.ContainerGroupProperties.OsType = aci.OperatingSystemTypes(operatingSystem)
 
@@ -371,7 +372,6 @@ func getContainers(pod *v1.Pod) ([]aci.Container, error) {
 		cpuRequest := float64(container.Resources.Requests.Cpu().Value())
 		memoryRequest := float64(container.Resources.Requests.Memory().Value()) / 1000000000.00
 
-		fmt.Println("CPUL: ", cpuLimit, "meml: ", memoryLimit, "cpuR:", cpuRequest, "memR:", memoryRequest)
 		if cpuLimit == 0 {
 			cpuLimit = 1
 		}

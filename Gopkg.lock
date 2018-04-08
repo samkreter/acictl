@@ -83,7 +83,7 @@
   branch = "master"
   name = "github.com/samkreter/Kirix"
   packages = ["providers/aci"]
-  revision = "5b13eeea65dc2e2960a9ab58c4aadfe423421655"
+  revision = "699249993131d31bd8268b5e130179560bee319c"
 
 [[projects]]
   name = "github.com/spf13/cobra"

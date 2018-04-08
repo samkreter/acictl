@@ -15,9 +15,33 @@ import (
 	client "github.com/virtual-kubelet/virtual-kubelet/providers/azure/client/aci"
 )
 
+type ArmTemplate struct {
+	Schema         string        `json:"$schema"`
+	ContentVersion string        `json:"contentVersion"`
+	Resources      []interface{} `json:"resources"`
+}
+
 var (
-	RandStringLength = 5
+	RandStringLength          = 5
+	ArmTemplateSchema         = "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#"
+	ArmTemplateContentVersion = "1.0.0.0"
 )
+
+func GenerateArmTemplate(cg *client.ContainerGroup) *ArmTemplate {
+	cgWithAPIVersion := struct {
+		client.ContainerGroup
+		APIVersion string `json:"apiVersion"`
+	}{
+		*cg,
+		"2018-04-01",
+	}
+
+	return &ArmTemplate{
+		Schema:         ArmTemplateSchema,
+		ContentVersion: ArmTemplateContentVersion,
+		Resources:      []interface{}{cgWithAPIVersion},
+	}
+}
 
 func Delete(deploymentFile string, resourceGroup string) error {
 	deployment, err := GetDeploymentFromFile(deploymentFile)
@@ -112,12 +136,14 @@ func Convert(deploymentFile string, resourceGroup string, region string) error {
 
 	pod.Name = deployment.GetName()
 
-	aci, err := kirix.GetACIFromK8sPod(pod, region, "Linux")
+	cg, err := kirix.GetACIFromK8sPod(pod, region, "Linux")
 	if err != nil {
 		return err
 	}
 
-	jsonData, err := json.Marshal(aci)
+	template := GenerateArmTemplate(cg)
+
+	jsonData, err := json.MarshalIndent(template, "", "  ")
 	if err != nil {
 		return err
 	}

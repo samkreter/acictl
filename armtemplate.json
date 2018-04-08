@@ -1,0 +1,62 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "resources": [
+        {
+            "name": "myContainerGroup",
+            "type": "Microsoft.ContainerInstance/containerGroups",
+            "apiVersion": "2018-04-01",
+            "location": "westus",
+            "properties": {
+                "containers": [
+                    {
+                        "name": "aci-test",
+                        "properties": {
+                            "image": "microsoft/aci-helloworld:latest",
+                            "resources": {
+                                "requests": {
+                                    "cpu": 1,
+                                    "memoryInGb": 1.5
+                                }
+                            },
+                            "ports": [
+                                {
+                                    "port": 80
+                                },
+                                {
+                                    "port": 8080
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "aci-tutorial-app2",
+                        "properties": {
+                            "image": "microsoft/aci-helloworld:latest",
+                            "resources": {
+                                "requests": {
+                                    "cpu": 1,
+                                    "memoryInGb": 1.5
+                                }
+                            }
+                        }
+                    }
+                ],
+                "osType": "Linux",
+                "ipAddress": {
+                    "type": "Public",
+                    "ports": [
+                        {
+                            "protocol": "tcp",
+                            "port": "80"
+                        },
+                        {
+                            "protocol": "tcp",
+                            "port": "8080"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}
