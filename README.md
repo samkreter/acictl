@@ -1,6 +1,10 @@
 # acictl
 A simple way to interact with Azure Container Instance in a Kubernetes style. 
 
+## Installation
+
+With a working Go environment run: `go get github.com/samkreter/acictl`
+
 ## Usage
 
 #### Create
