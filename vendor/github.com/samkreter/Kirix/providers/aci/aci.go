@@ -14,12 +14,14 @@ import (
 	"strings"
 	"time"
 
+	client "github.com/virtual-kubelet/virtual-kubelet/providers/azure/client"
 	"github.com/virtual-kubelet/virtual-kubelet/providers/azure/client/aci"
 	"k8s.io/api/core/v1"
 )
 
 const (
 	WorkEnvVarName = "KIRIX_WORK"
+	AzureInfoFile  = "./azureInfo.json"
 )
 
 type ACIProvider struct {
@@ -58,7 +60,7 @@ func NewACIProvider(config string, operatingSystem string, image string, deploym
 	var p ACIProvider
 	var err error
 
-	p.aciClient, err = aci.NewClient()
+	p.aciClient, err = CreateACIClient()
 	if err != nil {
 		return nil, err
 	}
@@ -130,6 +132,62 @@ func NewACIProvider(config string, operatingSystem string, image string, deploym
 	}
 
 	return &p, err
+}
+
+func CreateACIClient() (*aci.Client, error) {
+	var azAuth *client.Authentication
+
+	if authFilepath := os.Getenv("AZURE_AUTH_LOCATION"); authFilepath != "" {
+		auth, err := client.NewAuthenticationFromFile(authFilepath)
+		if err != nil {
+			return nil, err
+		}
+
+		azAuth = auth
+	} else {
+		azAuth = GetDefaultAzureAuthentication()
+	}
+
+	if clientID := os.Getenv("AZURE_CLIENT_ID"); clientID != "" {
+		azAuth.ClientID = clientID
+	}
+
+	if clientSecret := os.Getenv("AZURE_CLIENT_SECRET"); clientSecret != "" {
+		azAuth.ClientSecret = clientSecret
+	}
+
+	if tenantID := os.Getenv("AZURE_TENANT_ID"); tenantID != "" {
+		azAuth.TenantID = tenantID
+	}
+
+	if subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID"); subscriptionID != "" {
+		azAuth.SubscriptionID = subscriptionID
+	}
+
+	if azAuth.TenantID == "" ||
+		azAuth.SubscriptionID == "" ||
+		azAuth.ClientSecret == "" ||
+		azAuth.ClientID == "" {
+		return nil, errors.New("Must have AZURE_CLIENT_ID, AZURE_CLIENT_SECRET, AZURE_TENANT_ID and AZURE_SUBSCRIPTION_ID set.")
+	}
+
+	client, err := aci.NewClient(azAuth)
+	if err != nil {
+		return nil, err
+	}
+
+	return client, nil
+}
+
+func GetDefaultAzureAuthentication() *client.Authentication {
+	return &client.Authentication{
+		ActiveDirectoryEndpoint: "https://login.microsoftonline.com",
+		ResourceManagerEndpoint: "https://management.azure.com/",
+		GraphResourceID:         "https://graph.windows.net/",
+		SQLManagementEndpoint:   "https://management.core.windows.net:8443/",
+		GalleryEndpoint:         "https://gallery.azure.com/",
+		ManagementEndpoint:      "https://management.core.windows.net/",
+	}
 }
 
 func (p *ACIProvider) CreateComputeInstance(name string, work string) error {
@@ -214,7 +272,7 @@ func GetSingleImageContainerGroup(image string, region string, operatingSystem s
 }
 
 func (p *ACIProvider) GetComputeInstance(namespace, name string) (*aci.ContainerGroup, error) {
-	cg, err := p.aciClient.GetContainerGroup(p.resourceGroup, fmt.Sprintf("%s-%s", namespace, name))
+	cg, err, _ := p.aciClient.GetContainerGroup(p.resourceGroup, fmt.Sprintf("%s-%s", namespace, name))
 	if err != nil {
 		return nil, err
 	}
@@ -224,7 +282,7 @@ func (p *ACIProvider) GetComputeInstance(namespace, name string) (*aci.Container
 
 func (p *ACIProvider) GetContainerLogs(namespace, podName, containerName string, tail int) (string, error) {
 	logContent := ""
-	cg, err := p.aciClient.GetContainerGroup(p.resourceGroup, fmt.Sprintf("%s-%s", namespace, podName))
+	cg, err, _ := p.aciClient.GetContainerGroup(p.resourceGroup, fmt.Sprintf("%s-%s", namespace, podName))
 	if err != nil {
 		return logContent, err
 	}

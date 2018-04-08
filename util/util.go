@@ -49,7 +49,7 @@ func Delete(deploymentFile string, resourceGroup string) error {
 		return fmt.Errorf("Parse deployment error: %s", err)
 	}
 
-	aciClient, err := client.NewClient()
+	aciClient, err := kirix.CreateACIClient()
 	if err != nil {
 		return err
 	}
@@ -90,7 +90,7 @@ func Create(deploymentFile string, resourceGroup string, region string) error {
 		return err
 	}
 
-	aciClient, err := client.NewClient()
+	aciClient, err := kirix.CreateACIClient()
 	if err != nil {
 		return err
 	}

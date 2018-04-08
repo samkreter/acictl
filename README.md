@@ -5,6 +5,31 @@ A simple way to interact with Azure Container Instance in a Kubernetes style.
 
 With a working Go environment run: `go get github.com/samkreter/acictl`
 
+#### Create a service principal
+
+This creates a way to identify acictl when trying to create and delete ACI resources. This is not required for the convert command.
+
+1. Create a service principal either through the azure portal or using the az cli.
+  
+2. Save the values from the command output in environment variables:
+
+    **Bash**
+    ```cli
+    export AZURE_TENANT_ID=<Tenant>
+    export AZURE_CLIENT_ID=<AppId>
+    export AZURE_CLIENT_SECRET=<Password>
+    export AZURE_SUBSCRIPTION_ID=<SubscriptionID>
+    ```
+
+    **PowerShell**
+    ```cli
+    $env:AZURE_TENANT_ID = "<Tenant>"
+    $env:AZURE_CLIENT_ID = "<AppId>"
+    $env:AZURE_CLIENT_SECRET = "<Password>"
+    $env:AZURE_SUBSCRIPTION_ID=<SubscriptionID>
+
+Now you are ready to start using acictl!
+
 ## Usage
 
 #### Create

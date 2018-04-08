@@ -172,9 +172,10 @@ type ImageRegistryCredential struct {
 
 // IPAddress is IP address for the container group.
 type IPAddress struct {
-	Ports []Port `json:"ports,omitempty"`
-	Type  string `json:"type,omitempty"`
-	IP    string `json:"ip,omitempty"`
+	Ports        []Port `json:"ports,omitempty"`
+	Type         string `json:"type,omitempty"`
+	IP           string `json:"ip,omitempty"`
+	DNSNameLabel string `json:"dnsNameLabel,omitempty"`
 }
 
 // Logs is the logs.
@@ -263,7 +264,7 @@ type UsageListResult struct {
 type Volume struct {
 	Name      string                 `json:"name,omitempty"`
 	AzureFile *AzureFileVolume       `json:"azureFile,omitempty"`
-	EmptyDir  map[string]interface{} `json:"emptyDir,omitempty"`
+	EmptyDir  map[string]interface{} `json:"emptyDir"`
 	Secret    map[string]string      `json:"secret,omitempty"`
 	GitRepo   *GitRepoVolume         `json:"gitRepo,omitempty"`
 }

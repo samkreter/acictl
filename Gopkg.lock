@@ -83,7 +83,7 @@
   branch = "master"
   name = "github.com/samkreter/Kirix"
   packages = ["providers/aci"]
-  revision = "699249993131d31bd8268b5e130179560bee319c"
+  revision = "9eea3d16ce8cc6cf04f8183b9c562c5e90d52570"
 
 [[projects]]
   name = "github.com/spf13/cobra"
@@ -104,8 +104,8 @@
     "providers/azure/client/aci",
     "providers/azure/client/api"
   ]
-  revision = "7738ccb30b096c7003cbaa7615b5326d69702799"
-  version = "v0.1"
+  revision = "3670d9fa205063d8849ed4615aafa2a3b71a56a6"
+  version = "v0.2-beta-9"
 
 [[projects]]
   branch = "master"
@@ -230,6 +230,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f27fbb382afc72e6ab6d42d8f5ca6fa00ef2c54a0d2a62e0607999bdb1541b63"
+  inputs-digest = "9cb876f8256d2c39fd54572a8b1c877c05dae595ab083c6e3f3a89c1492da680"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -10,8 +10,8 @@ import (
 const (
 	// BaseURI is the default URI used for compute services.
 	BaseURI    = "https://management.azure.com"
-	userAgent  = "virtual-kubelet/azure-arm-aci/2017-12-01"
-	apiVersion = "2017-12-01-preview"
+	userAgent  = "virtual-kubelet/azure-arm-aci/2018-02-01"
+	apiVersion = "2018-02-01-preview"
 
 	containerGroupURLPath                    = "subscriptions/{{.subscriptionId}}/resourceGroups/{{.resourceGroup}}/providers/Microsoft.ContainerInstance/containerGroups/{{.containerGroupName}}"
 	containerGroupListURLPath                = "subscriptions/{{.subscriptionId}}/providers/Microsoft.ContainerInstance/containerGroups"
@@ -29,16 +29,14 @@ type Client struct {
 }
 
 // NewClient creates a new Azure Container Instances client.
-func NewClient() (*Client, error) {
-	// Get authentication credentials from file.
-	auth, err := azure.NewAuthenticationFromFile()
-	if err != nil {
-		return nil, fmt.Errorf("Creating azure authentication from file failed: %v", err)
+func NewClient(auth *azure.Authentication) (*Client, error) {
+	if auth == nil {
+		return nil, fmt.Errorf("Authentication is not supplied for the Azure client")
 	}
 
 	client, err := azure.NewClient(auth, BaseURI, userAgent)
 	if err != nil {
-		return nil, fmt.Errorf("Creating azure client failed: %v", err)
+		return nil, fmt.Errorf("Creating Azure client failed: %v", err)
 	}
 
 	return &Client{hc: client.HTTPClient, auth: auth}, nil
