@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"math/rand"
+	"strings"
 
 	"k8s.io/api/core/v1"
 	"k8s.io/api/extensions/v1beta1"
@@ -17,6 +18,35 @@ import (
 var (
 	RandStringLength = 5
 )
+
+func Delete(deploymentFile string, resourceGroup string) error {
+	deployment, err := GetDeploymentFromFile(deploymentFile)
+	if err != nil {
+		return fmt.Errorf("Parse deployment error: %s", err)
+	}
+
+	aciClient, err := client.NewClient()
+	if err != nil {
+		return err
+	}
+
+	cgList, err := aciClient.ListContainerGroups(resourceGroup)
+	if err != nil {
+		return fmt.Errorf("Container group list error: %s", err)
+	}
+
+	for _, cg := range cgList.Value {
+		if strings.Contains(cg.Name, deployment.Name) {
+			fmt.Printf("Deleting container group %s\n", cg.Name)
+			err := aciClient.DeleteContainerGroup(resourceGroup, cg.Name)
+			if err != nil {
+				return fmt.Errorf("Delete container group error: %s", err)
+			}
+		}
+	}
+
+	return nil
+}
 
 func Create(deploymentFile string, resourceGroup string, region string) error {
 

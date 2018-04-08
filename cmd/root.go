@@ -44,6 +44,18 @@ var create = &cobra.Command{
 	},
 }
 
+var delete = &cobra.Command{
+	Use:   "delete",
+	Short: "Delete an Azure Container Instance from a Kubernetes deployment spec.",
+	Long:  `Delete an Azure Container Instance from a Kubernetes deployment spec.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		err := util.Delete(deploymentFile, resourceGroup)
+		if err != nil {
+			log.Fatal(err)
+		}
+	},
+}
+
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
@@ -68,6 +80,7 @@ func init() {
 	//Add the sub commands
 	RootCmd.AddCommand(convert)
 	RootCmd.AddCommand(create)
+	RootCmd.AddCommand(delete)
 }
 
 // initConfig reads in config file and ENV variables if set.
