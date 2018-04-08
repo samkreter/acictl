@@ -9,7 +9,10 @@ With a working Go environment run: `go get github.com/samkreter/acictl`
 
 This creates a way to identify acictl when trying to create and delete ACI resources. This is not required for the convert command.
 
-1. Create a service principal either through the azure portal or using the az cli.
+1. Create a service principal with RBAC enabled for the quickstart:
+    ```cli
+    az ad sp create-for-rbac --name acictl-sp -o table
+    ```
   
 2. Save the values from the command output in environment variables:
 
