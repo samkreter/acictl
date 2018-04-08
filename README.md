@@ -40,7 +40,7 @@ To delete a deployment, simply run `acictl delete -g ResourceGroup -f test.yaml`
 
 #### Convert
 
-Convert allows for generating an Azure ARM template from a Kubernetes deployment spec. 
+Convert allows you to generating an Azure ARM template from a Kubernetes deployment spec. 
 
 Running `acictl convert -f test.yaml > template.json` will generate the ARM template. This can be used with the azure cli to create a container instaces using 
 
