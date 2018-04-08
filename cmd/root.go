@@ -37,6 +37,10 @@ var create = &cobra.Command{
 	Short: "Create an Azure Container Instance from a Kubernetes deployment spec.",
 	Long:  `Create an Azure Container Instance from a Kubernetes deployment spec.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		if resourceGroup == "" {
+			log.Fatal("Must supply an Azure resource group with the -g flag.")
+		}
+
 		err := util.Create(deploymentFile, resourceGroup, region)
 		if err != nil {
 			log.Fatal(err)
@@ -49,6 +53,10 @@ var delete = &cobra.Command{
 	Short: "Delete an Azure Container Instance from a Kubernetes deployment spec.",
 	Long:  `Delete an Azure Container Instance from a Kubernetes deployment spec.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		if resourceGroup == "" {
+			log.Fatal("Must supply an Azure resource group with the -g flag.")
+		}
+
 		err := util.Delete(deploymentFile, resourceGroup)
 		if err != nil {
 			log.Fatal(err)
@@ -73,9 +81,12 @@ func init() {
 	// will be global for your application.
 	RootCmd.PersistentFlags().StringVarP(&region, "region", "r", "westus", "region for aci.")
 	RootCmd.PersistentFlags().StringVarP(&deploymentFile, "deployment-file", "f", "", "the kubernetes deployment file (required).")
-	RootCmd.PersistentFlags().StringVarP(&resourceGroup, "resource-group", "g", "", "azure resource group for aci (required).")
 	RootCmd.MarkFlagRequired("deployment-file")
-	RootCmd.MarkFlagRequired("resource-group")
+
+	create.PersistentFlags().StringVarP(&resourceGroup, "resource-group", "g", "", "azure resource group for aci (required).")
+	create.MarkFlagRequired("resource-group")
+	delete.PersistentFlags().StringVarP(&resourceGroup, "resource-group", "g", "", "azure resource group for aci (required).")
+	delete.MarkFlagRequired("resource-group")
 
 	//Add the sub commands
 	RootCmd.AddCommand(convert)
@@ -88,10 +99,6 @@ func initConfig() {
 
 	if deploymentFile == "" {
 		log.Fatal("Must supply a deployment file with the -f flag.")
-	}
-
-	if resourceGroup == "" {
-		log.Fatal("Must supply an Azure resource group with the -g flag.")
 	}
 
 	//Make westus the default region
