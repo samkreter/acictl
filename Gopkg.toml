@@ -1,6 +1,6 @@
 # Gopkg.toml example
 #
-# Refer to https://golang.github.io/dep/docs/Gopkg.toml.html
+# Refer to https://github.com/golang/dep/blob/master/docs/Gopkg.toml.md
 # for detailed Gopkg.toml documentation.
 #
 # required = ["github.com/user/thing/cmd/thing"]
@@ -26,6 +26,10 @@
 
 
 [[constraint]]
+  branch = "master"
+  name = "github.com/samkreter/Kirix"
+
+[[constraint]]
   name = "github.com/spf13/cobra"
   version = "0.0.2"
 
@@ -34,8 +38,12 @@
   version = "1.0.2"
 
 [[constraint]]
+  branch = "master"
+  name = "k8s.io/api"
+
+[[constraint]]
   name = "k8s.io/client-go"
-  version = "4.0.0"
+  version = "7.0.0"
 
 [prune]
   go-tests = true

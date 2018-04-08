@@ -1,6 +1,0 @@
-defaults:
-- pause:
-  image: gcr.io/google_containers/pause-amd64:3.0
-- postgres:
-  image: postgres:latest
-  name: postgres
