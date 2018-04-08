@@ -17,7 +17,7 @@ var region string
 var RootCmd = &cobra.Command{
 	Use:   "acictl",
 	Short: "acictl provides a simple way to interact with Azure Container Instance.",
-	Long:  `TODO`,
+	Long:  `acictl provides a simple way to interact with Azure Container Instance.`,
 }
 
 var convert = &cobra.Command{
